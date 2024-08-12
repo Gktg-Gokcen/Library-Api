@@ -25,7 +25,6 @@ public class User {
     @Column(name = "user_surname")
     @NotNull
     @NotBlank
-    @Max(30)
     private String userSurname;
 
     @Email(message = "Email alanı email formatında olmalıdır.")
@@ -33,8 +32,7 @@ public class User {
 
     @Column(name = "user_password")
     @NotNull
-    @Max(12)
-    @Min(5)
+    @Size(min = 6, message = "Soyad en az 6 karakter olmalıdır.")
     private String userPassword;
 
     private String token;

@@ -3,6 +3,7 @@ import com.docuart.library.entity.User;
 import com.docuart.library.utils.Utils;
 import com.docuart.library.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class UserServices {
     private UserRepository userRepository;
 
     public List<User> findAll(){
-        return userRepository.findAll();
+        return userRepository.findAll(Sort.by(Sort.Direction.DESC, "userId"));
     }
 
     public User add(User user){
@@ -54,7 +55,9 @@ public class UserServices {
         return userRepository.countUsers();
     }
 
-
+    public User logout(){
+        return null;
+    }
 
 }
 
