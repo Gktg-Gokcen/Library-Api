@@ -4,18 +4,22 @@ import com.docuart.library.utils.Utils;
 import com.docuart.library.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserServices {
+public class UserServices implements UserDetailsService {
 
     @Autowired
-    private  PasswordEncoder passEncoder ;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     private UserRepository userRepository;
@@ -25,7 +29,7 @@ public class UserServices {
     }
 
     public User add(User user){
-        user.setUserPassword(passEncoder.encode(user.getUserPassword()));
+        user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
         return userRepository.save(user);
     }
 
@@ -59,6 +63,26 @@ public class UserServices {
         return null;
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return (UserDetails) userRepository.findByUsername(username).orElseThrow(()->new RuntimeException("Kullanıcı adı bulunamadı."));
+    }
+
+    public User findByKullaniciAdi(String kullaniciAdi){
+        return userRepository.getByUsername(kullaniciAdi);
+    }
+
+    public List<Object> isUserPresent(User user){
+        boolean userExists = false;
+        String message = null;
+        Optional<User> existingUsername = userRepository.findByUsername(user.getUsername());
+        if(existingUsername.isPresent()){
+            userExists = true;
+            message = "Username Already Present!";
+        }
+        System.out.println("existingUserEmail.isPresent() - "+existingUsername.isPresent()+"existingUserMobile.isPresent() - ");
+        return Arrays.asList(userExists, message);
+    }
 }
 
 

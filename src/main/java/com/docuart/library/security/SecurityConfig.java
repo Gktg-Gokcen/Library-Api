@@ -1,53 +1,89 @@
 package com.docuart.library.security;
 
+import com.docuart.library.service.UserServices;
+import jakarta.servlet.FilterChain;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class SecurityConfig  {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable().cors().and()
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/home", "/auth/**","/api/user/**","/api/book/**","/swagger-ui/**","/swagger-ui/index.html#/**","/swagger-ui/index.html#","/dashboard").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .logout((logout) -> logout.permitAll());
+    @Autowired
+    private CorsFilter corsFilter;
 
-        return http.build();
-    }
+    @Autowired
+    private JwtFilter jwtFilter;
 
     @Bean
     public UserDetailsService userDetailsService() {
-        UserDetails user =
-                User.withDefaultPasswordEncoder()
-                        .username("user")
-                        .password("password")
-                        .roles("USER")
-                        .build();
-
-        return new InMemoryUserDetailsManager(user);
+        return new UserServices();
     }
+
     @Bean
-    public BCryptPasswordEncoder passwordEncoder(){
+    @Primary
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+
+        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setPasswordEncoder(passwordEncoder());
+
+        return authProvider;
+    }
+
+    @Bean
+    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
+     // http.csrf().disable().authorizeHttpRequests(authz -> authz
+     //                         .requestMatchers("/", "/login", "/home", "/register", "/auth/**").permitAll().anyRequest().authenticated()
+     //                 //.requestMatchers("/admin/**","/api/book/**","/api/user/**","/dashboard").hasAnyAuthority("ADMIN")
+     //                 // .requestMatchers("/account/**","/api/book/**","/dashboard").hasAnyAuthority("USER")
+     //         ).logout(logout -> logout
+     //                 .logoutUrl("/logout")
+     //                 .logoutSuccessUrl("/")
+     //                 .permitAll()
+     //         )
+     //         .exceptionHandling(exceptions -> exceptions
+     //                 .accessDeniedPage("/access-denied")
+     //         )
+     //         .headers(headers -> headers
+     //                 .frameOptions(frameOptions -> frameOptions.sameOrigin())
+     //         );
+
+        http.csrf().disable().addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class).authorizeRequests()
+                .requestMatchers("/", "/login", "/home", "/register", "/auth/**")
+                .permitAll().requestMatchers(HttpMethod.OPTIONS).permitAll()// allow CORS option calls
+                //.requestMatchers("/api/2.0/*", "/swagger-ui.html","/api-doc","/swagger-ui/","/v3/api-docs/*").permitAll()// /addPackageStatus
+                .anyRequest().authenticated().and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http.authenticationProvider(authenticationProvider());
+        return http.build();
+    }
+
+
 }

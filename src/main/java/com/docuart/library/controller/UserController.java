@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
-@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     @Autowired
@@ -35,16 +34,6 @@ public class UserController {
     @DeleteMapping
     public ResponseEntity<?> delete(@RequestParam Long userId){
         return new ResponseEntity<>(userServices.delete(userId), HttpStatus.NO_CONTENT);
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user){
-        return new ResponseEntity<>(userServices.login(user), HttpStatus.OK);
-    }
-
-    @PostMapping("/logout")
-    public ResponseEntity<User> logout(){
-        return new ResponseEntity<>(userServices.logout(), HttpStatus.OK);
     }
 
     @GetMapping("/count")

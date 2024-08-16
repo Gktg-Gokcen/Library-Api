@@ -10,13 +10,17 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/book")
-@CrossOrigin(origins = "http://localhost:3000")
 public class BookController {
 
     @Autowired
     private BookServices bookServices;
 
-    @GetMapping("/GetAll")
+    @GetMapping("aa")
+    public void test(){
+        System.out.println("asdsadaamk");
+    }
+
+    @GetMapping("/getall")
     public ResponseEntity<?> findAll(){
         return new ResponseEntity<>(bookServices.findAllBooks(), HttpStatus.OK);
     }

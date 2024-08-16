@@ -1,17 +1,21 @@
 package com.docuart.library.entity;
 
+import com.docuart.library.enums.RoleEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.management.relation.Role;
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +41,7 @@ public class User {
 
     private String token;
 
-
+    @Enumerated(EnumType.STRING)
+    private RoleEnum role;
 
 }
