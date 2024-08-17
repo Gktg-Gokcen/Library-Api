@@ -1,14 +1,13 @@
 package com.docuart.library.entity;
 
-import com.docuart.library.enums.RoleEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.management.relation.Role;
 import java.io.Serializable;
+import java.util.Collection;
 
 @Data
 @AllArgsConstructor
@@ -41,7 +40,12 @@ public class User implements Serializable {
 
     private String token;
 
-    @Enumerated(EnumType.STRING)
-    private RoleEnum role;
+    @ManyToMany(fetch = FetchType.EAGER , cascade = CascadeType.ALL)
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id",referencedColumnName = "id"))
+    private Collection<Role> roles;
+
+
 
 }

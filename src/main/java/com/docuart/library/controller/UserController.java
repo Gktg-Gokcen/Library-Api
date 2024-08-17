@@ -25,6 +25,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<?> save(@Valid @RequestBody User user){
+
         return new ResponseEntity<>(userServices.add(user),HttpStatus.CREATED);
     }
     @PutMapping

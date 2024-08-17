@@ -34,11 +34,6 @@ public class JwtUtil {
                 .compact();
     }
 
-    @Bean
-    public BCryptPasswordEncoder jwtPasswordEncoder (){
-        return new BCryptPasswordEncoder();
-    }
-
 
     //verilen tokena ait kullanıcı adını döndürürü
     public String extractUsername(String token) {

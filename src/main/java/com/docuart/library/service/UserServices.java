@@ -1,4 +1,5 @@
 package com.docuart.library.service;
+import com.docuart.library.entity.Role;
 import com.docuart.library.entity.User;
 import com.docuart.library.utils.Utils;
 import com.docuart.library.repository.UserRepository;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +32,7 @@ public class UserServices implements UserDetailsService {
 
     public User add(User user){
         user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
+        user.setRoles(Arrays.asList(new Role("USER") ));
         return userRepository.save(user);
     }
 
@@ -60,6 +63,7 @@ public class UserServices implements UserDetailsService {
     }
 
     public User logout(){
+        System.out.println("dasdas");
         return null;
     }
 
