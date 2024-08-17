@@ -23,7 +23,7 @@ public class UserController {
     }
 
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<?> save(@Valid @RequestBody User user){
 
         return new ResponseEntity<>(userServices.add(user),HttpStatus.CREATED);
@@ -37,7 +37,7 @@ public class UserController {
         return new ResponseEntity<>(userServices.delete(userId), HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/count")
+    @GetMapping
     public ResponseEntity<Long> getUsersCount(){
         return new ResponseEntity<>(userServices.getcountusers(),HttpStatus.OK);
     }

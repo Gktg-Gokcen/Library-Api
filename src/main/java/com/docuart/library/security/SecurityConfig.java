@@ -75,7 +75,7 @@ public class SecurityConfig  {
 
         http.csrf().disable().addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class).authorizeRequests()
-                .requestMatchers("/", "/login", "/home", "/register", "/auth/**")
+                .requestMatchers("/", "/login", "/auth/**", "/api/user/register")
                 .permitAll().requestMatchers(HttpMethod.OPTIONS).permitAll()// allow CORS option calls
                 //.requestMatchers("/api/2.0/*", "/swagger-ui.html","/api-doc","/swagger-ui/","/v3/api-docs/*").permitAll()// /addPackageStatus
                 .anyRequest().authenticated().and().sessionManagement()

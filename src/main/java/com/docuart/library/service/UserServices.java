@@ -1,6 +1,7 @@
 package com.docuart.library.service;
 import com.docuart.library.entity.Role;
 import com.docuart.library.entity.User;
+import com.docuart.library.repository.RoleRepository;
 import com.docuart.library.utils.Utils;
 import com.docuart.library.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,21 @@ public class UserServices implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     public List<User> findAll(){
         return userRepository.findAll(Sort.by(Sort.Direction.DESC, "userId"));
     }
 
-    public User add(User user){
+    public User add(User user) {
         user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
-        user.setRoles(Arrays.asList(new Role("USER") ));
+        Role userrole = roleRepository.findByname("USER");
+        if (userrole == null) {
+            userrole = new Role("USER");
+            roleRepository.save(userrole);
+        }
+        user.setRoles(Arrays.asList(userrole));
         return userRepository.save(user);
     }
 
