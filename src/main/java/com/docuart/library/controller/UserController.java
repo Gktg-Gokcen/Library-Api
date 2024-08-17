@@ -37,7 +37,7 @@ public class UserController {
         return new ResponseEntity<>(userServices.delete(userId), HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping
+    @GetMapping("/count")
     public ResponseEntity<Long> getUsersCount(){
         return new ResponseEntity<>(userServices.getcountusers(),HttpStatus.OK);
     }

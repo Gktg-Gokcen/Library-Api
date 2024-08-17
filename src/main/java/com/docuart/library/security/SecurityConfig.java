@@ -23,8 +23,6 @@ import org.springframework.web.filter.CorsFilter;
 @EnableWebSecurity
 public class SecurityConfig  {
 
-    @Autowired
-    private CorsFilter corsFilter;
 
     @Autowired
     private JwtFilter jwtFilter;
@@ -73,11 +71,15 @@ public class SecurityConfig  {
      //                 .frameOptions(frameOptions -> frameOptions.sameOrigin())
      //         );
 
-        http.csrf().disable().addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class).authorizeRequests()
-                .requestMatchers("/", "/login", "/auth/**", "/api/user/register")
-                .permitAll().requestMatchers(HttpMethod.OPTIONS).permitAll()// allow CORS option calls
-                .anyRequest().authenticated().and().sessionManagement()
+        http.csrf().disable()
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeRequests()
+                    .requestMatchers("/", "/login", "/auth/**", "/api/user/register")
+                .permitAll()
+                .requestMatchers(HttpMethod.OPTIONS).permitAll()
+                .requestMatchers("/api/book/**").hasAuthority("USER")
+                .anyRequest().authenticated()
+                .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authenticationProvider(authenticationProvider());

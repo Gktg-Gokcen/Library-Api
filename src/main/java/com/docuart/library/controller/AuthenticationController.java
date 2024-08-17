@@ -1,9 +1,10 @@
 package com.docuart.library.controller;
 
 
+import com.docuart.library.entity.Role;
 import com.docuart.library.entity.User;
-import com.docuart.library.service.UserServices;
 import com.docuart.library.security.JwtUtil;
+import com.docuart.library.service.UserServices;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/auth")
@@ -51,7 +50,12 @@ public class AuthenticationController {
         InetAddress address = InetAddress.getLocalHost();
         String serverIp = address.getHostAddress();
 
-        String jwt = jwtUtil.generateToken(user.get().getUsername(),null);
+        Collection<Role> roles = user.get().getRoles();
+        List<String> authorities = roles.stream()
+                .map(Role::getName)
+                .collect(Collectors.toList());
+
+        String jwt = jwtUtil.generateToken(user.get().getUsername(), authorities);
         user.get().setToken(jwt);
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("status", HttpStatus.OK.toString());
@@ -59,12 +63,14 @@ public class AuthenticationController {
         responseBody.put("user", user);
         ArrayList<Integer> numbers = new ArrayList<Integer>();
         numbers.add(5);
-        numbers.forEach( (n) -> { System.out.println(n); } );
+        numbers.forEach((n) -> {
+            System.out.println(n);
+        });
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<User> logout(){
+    public ResponseEntity<User> logout() {
         return new ResponseEntity<>(userServices.logout(), HttpStatus.OK);
     }
 
