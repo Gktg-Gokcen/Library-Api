@@ -36,12 +36,17 @@ public class UserServices implements UserDetailsService {
 
     public User add(User user) {
         user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
-        Role userrole = roleRepository.findByname("USER");
-        if (userrole == null) {
-            userrole = new Role("USER");
-            roleRepository.save(userrole);
+        Role userRole = roleRepository.findByname("USER");
+        if (userRole == null) {
+            userRole = new Role("USER");
+            roleRepository.save(userRole);
         }
-        user.setRoles(Arrays.asList(userrole));
+        Role adminRole = roleRepository.findByname("ADMIN");
+        if (adminRole == null) {
+            adminRole = new Role("ADMIN");
+            roleRepository.save(adminRole);
+        }
+        user.setRoles(Arrays.asList(userRole, adminRole));
         return userRepository.save(user);
     }
 
