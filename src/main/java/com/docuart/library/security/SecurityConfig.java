@@ -74,10 +74,11 @@ public class SecurityConfig  {
         http.csrf().disable()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                    .requestMatchers("/", "/login", "/auth/**", "/api/user/register")
+                    .requestMatchers("/", "/auth/login", "/auth/**", "/api/user/register")
                 .permitAll()
                 .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                .requestMatchers("/api/book/**").hasAuthority("USER")
+                .requestMatchers("/api/book/getall").hasAuthority("USER")
+                .requestMatchers("/api/book/**","/api/user/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

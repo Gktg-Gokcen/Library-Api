@@ -15,10 +15,6 @@ public class BookController {
     @Autowired
     private BookServices bookServices;
 
-    @GetMapping("aa")
-    public void test(){
-        System.out.println("asdsadaamk");
-    }
 
     @GetMapping("/getall")
     public ResponseEntity<?> findAll(){
