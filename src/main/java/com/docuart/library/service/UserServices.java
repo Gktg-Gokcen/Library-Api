@@ -4,6 +4,7 @@ import com.docuart.library.entity.User;
 import com.docuart.library.repository.RoleRepository;
 import com.docuart.library.utils.Utils;
 import com.docuart.library.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
