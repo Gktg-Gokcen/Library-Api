@@ -62,8 +62,7 @@ public class SecurityConfig  {
                     .requestMatchers("/", "/auth/login", "/auth/**", "/api/user/register")
                 .permitAll()
                 .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                .requestMatchers("/api/book/getall").hasAuthority("USER")
-                .requestMatchers("/api/book/**","/api/user/**","/api/**").hasAuthority("ADMIN")
+                .requestMatchers("/api/**").hasAnyAuthority("USER", "EDITOR", "ADMIN") // Birden fazla yetkiyi kontrol eder
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

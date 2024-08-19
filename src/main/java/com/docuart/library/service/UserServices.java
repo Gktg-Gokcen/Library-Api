@@ -13,10 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserServices implements UserDetailsService {
@@ -34,19 +31,10 @@ public class UserServices implements UserDetailsService {
         return userRepository.findAll(Sort.by(Sort.Direction.DESC, "userId"));
     }
 
-    public User add(User user) {
+    public User add(User user, Long roleId) {
         user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
-        Role userRole = roleRepository.findByname("USER");
-        if (userRole == null) {
-            userRole = new Role("USER");
-            roleRepository.save(userRole);
-        }
-        Role adminRole = roleRepository.findByname("ADMIN");
-        if (adminRole == null) {
-            adminRole = new Role("ADMIN");
-            roleRepository.save(adminRole);
-        }
-        user.setRoles(Arrays.asList(userRole, adminRole));
+        Role userRole = roleRepository.findById(roleId).orElseThrow(() -> new RuntimeException("Role bulunamadi ..."));
+        user.setRoles(Collections.singletonList(userRole));
         return userRepository.save(user);
     }
 

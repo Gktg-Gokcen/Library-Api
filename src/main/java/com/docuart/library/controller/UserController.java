@@ -24,9 +24,8 @@ public class UserController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> save(@Valid @RequestBody User user){
-
-        return new ResponseEntity<>(userServices.add(user),HttpStatus.CREATED);
+    public ResponseEntity<?> save(@Valid @RequestBody User user, @RequestParam("roleId") Long roleId){
+        return new ResponseEntity<>(userServices.add(user, roleId),HttpStatus.CREATED);
     }
     @PutMapping
     public ResponseEntity<?> update(@Valid  @RequestParam Long userId, @RequestBody User user){
