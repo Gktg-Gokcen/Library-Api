@@ -47,11 +47,19 @@ public class BookController {
 
 
     @GetMapping("/give-book")
-    public ResponseEntity<?> giveBook(@RequestParam(name = "bookId") Long bookId){
-        return new ResponseEntity<>(bookServices.giveBook(bookId), HttpStatus.OK);
+    public ResponseEntity<?> giveBook(@RequestParam(name = "bookId") Long bookId, @RequestParam(name = "userId") Long userId){
+        return new ResponseEntity<>(bookServices.giveBook(bookId, userId), HttpStatus.OK);
     }
+
     @GetMapping("/count")
     public ResponseEntity<Long> getBookCount() {
         return new ResponseEntity<>(bookServices.getcountbooks(),HttpStatus.OK);
     }
+
+    @GetMapping("/get-books-by-user")
+    public ResponseEntity<?> getBooksByUser(@RequestParam("userId") Long userId) {
+        return new ResponseEntity<>(bookServices.getBooksByUser(userId),HttpStatus.OK);
+    }
+
+
 }

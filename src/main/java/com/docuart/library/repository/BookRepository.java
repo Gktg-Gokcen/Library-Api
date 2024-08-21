@@ -12,7 +12,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Query(value = "" +
             "" +
-            " SELECT * from book t where t.quantity > 0 " +
+            " SELECT * from book " +
             " order by book_id desc ", nativeQuery = true)
     List<Book> findAllBooks();
 

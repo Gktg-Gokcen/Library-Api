@@ -1,5 +1,6 @@
 package com.docuart.library.entity;
 
+import com.docuart.library.enums.BookStatusEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
@@ -40,5 +41,6 @@ public class Book {
     @Column(name = "image_url", length = 1000)
     private String imageUrl;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private BookStatusEnum status;
 }

@@ -62,7 +62,7 @@ public class SecurityConfig  {
                     .requestMatchers("/", "/auth/login", "/auth/**", "/api/user/register")
                 .permitAll()
                 .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                .requestMatchers("/api/book/getall","/api/book/count").hasAnyAuthority( "USER","ADMIN")
+                .requestMatchers("/api/book/getall","/api/book/count","api/user/count","/api/book/give-book").hasAnyAuthority( "USER","ADMIN")
                 .requestMatchers("/api/**").hasAnyAuthority("EDITOR","ADMIN")
                 .anyRequest().authenticated()
                 .and().sessionManagement()
