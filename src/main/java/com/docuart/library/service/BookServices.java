@@ -1,16 +1,14 @@
 package com.docuart.library.service;
+
 import com.docuart.library.entity.Book;
 import com.docuart.library.entity.User;
 import com.docuart.library.enums.BookStatusEnum;
 import com.docuart.library.repository.BookRepository;
 import com.docuart.library.repository.UserRepository;
 import com.docuart.library.utils.Utils;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -76,10 +74,7 @@ public class BookServices {
 
             return "Güncelleme işlemi başarılı.";
         }
-
-
     }
-
 
     public Long getcountbooks(){
         return bookRepository.countBooks();
@@ -88,6 +83,15 @@ public class BookServices {
     public List<Book> getBooksByUser(Long userId){
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User bulunamadi ..."));
         return user.getBooks();
+    }
+
+    public String dropBook(Long userId, Long bookId){
+        User user = userRepository.findById(userId).orElseThrow(() ->new RuntimeException("User bulunamadı."));
+        Book dropBook = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Kitap bulunamadı."));
+        user.getBooks().remove(dropBook);
+        dropBook.setQuantity(dropBook.getQuantity()+1);
+        userRepository.save(user);
+        return "İade işlemi başarılı.";
     }
 
 }

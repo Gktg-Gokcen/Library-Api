@@ -61,5 +61,10 @@ public class BookController {
         return new ResponseEntity<>(bookServices.getBooksByUser(userId),HttpStatus.OK);
     }
 
+    @GetMapping("/drop-book")
+    public ResponseEntity<?> dropBook (@RequestParam(name = "bookId") Long bookId, @RequestParam(name = "userId") Long userId){
+        return new ResponseEntity<>(bookServices.dropBook(userId,bookId),HttpStatus.OK);
+    }
+
 
 }
