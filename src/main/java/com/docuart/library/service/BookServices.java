@@ -43,6 +43,8 @@ public class BookServices {
         return book;
     }
 
+
+
     public Book update(Long bookId,Book book){
         Book guncellenecekBook = bookRepository.findById(bookId).orElseThrow(()->new RuntimeException("İd bulunamadı."));
         Utils.copyNonNullProperties(book,guncellenecekBook);
