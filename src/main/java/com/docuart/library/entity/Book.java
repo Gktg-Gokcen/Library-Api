@@ -9,6 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,6 +29,7 @@ public class Book {
     @Max(30)
     private String bookName;
 
+    @Column(name = "summary", length = 1000)
     @NotNull
     @NotBlank
     private String summary;
@@ -42,5 +46,9 @@ public class Book {
     private String imageUrl;
 
     @Enumerated(EnumType.STRING)
-    private BookStatusEnum status;
+    private BookStatusEnum status = BookStatusEnum.AKTIF;
+
+
+    @Column(name = "creation_time", updatable = false)
+    private LocalDateTime creationTime;
 }

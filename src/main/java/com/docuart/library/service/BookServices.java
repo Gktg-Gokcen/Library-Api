@@ -9,6 +9,10 @@ import com.docuart.library.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -33,7 +37,10 @@ public class BookServices {
     }
 
     public Book add(Book book){
-        return bookRepository.save(book);
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES); // Saniyesiz ayarlama
+        book.setCreationTime(now);
+        bookRepository.save(book);
+        return book;
     }
 
     public Book update(Long bookId,Book book){
@@ -53,7 +60,7 @@ public class BookServices {
         return "Silme işlemi başarılı.";
     }
 
-    public String giveBook(Long bookId, Long userId) {
+    public String giveBook(Long bookId, Long userId) throws RuntimeException{
         Book odunVerilecekKitap = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("İd bulunamadı."));
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User bulunamadi ..."));
 
